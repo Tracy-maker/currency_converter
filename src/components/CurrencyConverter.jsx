@@ -1,25 +1,35 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { fetchLatestRates } from "../utils/api";
+import React, { useState, useEffect } from "react";
+import { fetchLatestRates} from "../utils/api";  
 import ConversionTable from "./ConversionTable";
+import HistoricalChart from "./HistoricalChart";
 
 const CurrencyConverter = () => {
-  const [amount, setAmount] = useState(1);
+  const [amount, setAmount] = useState(1); 
   const [rates, setRates] = useState({});
-  const [currencies] = useState(['USD', 'EUR', 'GBP', 'JPY', 'CAD']); 
+  const [currencies] = useState(['USD', 'EUR', 'GBP', 'JPY', 'CAD']);
+  const [selectedCurrency, setSelectedCurrency] = useState(null);  
 
   useEffect(() => {
     const getRates = async () => {
-      const fetchedRates = await fetchLatestRates();
+      const fetchedRates = await fetchLatestRates(); 
       if (fetchedRates) {
-        setAmount(fetchedRates);
+        setRates(fetchedRates);
       }
     };
     getRates();
   }, []);
 
+  const handleCurrencyClick = (currency) => {
+    setSelectedCurrency(currency); 
+  };
+
+  const closeChart = () => {
+    setSelectedCurrency(null);
+  };
+
   return (
-    <div className="mt-4">
+    <div>
       <input
         type="number"
         value={amount}
@@ -27,7 +37,16 @@ const CurrencyConverter = () => {
         className="border p-2 rounded w-full"
         placeholder="Enter amount in AUD"
       />
-      <ConversionTable amount={amount} rates={rates} currencies={currencies}/>
+      <ConversionTable
+        amount={amount}
+        rates={rates}
+        currencies={currencies}
+        onCurrencyClick={handleCurrencyClick} 
+      />
+    
+    {selectedCurrency && (
+        <HistoricalChart currency={selectedCurrency} onClose={closeChart} />
+      )}
     </div>
   );
 };

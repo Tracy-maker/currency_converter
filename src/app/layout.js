@@ -1,5 +1,5 @@
 import "./globals.css";
-
+import React from 'react'; 
 export const metadata = {
   title: "Currency-Converter",
   description: "A simple and user-friendly currency conversion tool",

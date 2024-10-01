@@ -1,18 +1,18 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { fetchLatestRates} from "../utils/api";  
+import { fetchLatestRates } from "../utils/api";
 import ConversionTable from "./ConversionTable";
 import HistoricalChart from "./HistoricalChart";
 
 const CurrencyConverter = () => {
-  const [amount, setAmount] = useState(1); 
+  const [amount, setAmount] = useState(1);
   const [rates, setRates] = useState({});
-  const [currencies] = useState(['USD', 'EUR', 'GBP', 'JPY', 'CAD']);
-  const [selectedCurrency, setSelectedCurrency] = useState(null);  
+  const [currencies] = useState(["USD", "EUR", "GBP", "JPY", "CAD"]);
+  const [selectedCurrency, setSelectedCurrency] = useState(null);
 
   useEffect(() => {
     const getRates = async () => {
-      const fetchedRates = await fetchLatestRates(); 
+      const fetchedRates = await fetchLatestRates();
       if (fetchedRates) {
         setRates(fetchedRates);
       }
@@ -21,19 +21,29 @@ const CurrencyConverter = () => {
   }, []);
 
   const handleCurrencyClick = (currency) => {
-    setSelectedCurrency(currency); 
+    setSelectedCurrency(currency);
   };
 
   const closeChart = () => {
     setSelectedCurrency(null);
   };
 
+  const handleAmountChange = (e) => {
+    const value = e.target.value;
+
+    if (/^\d+$/.test(value) && value[0] !== "0") {
+      setAmount(value);
+    } else if (value === "") {
+      setAmount("");
+    }
+  };
+
   return (
     <div>
       <input
-        type="number"
+        type="text"
         value={amount}
-        onChange={(e) => setAmount(e.target.value)}
+        onChange={handleAmountChange}
         className="border p-2 rounded w-full"
         placeholder="Enter amount in AUD"
       />
@@ -41,10 +51,10 @@ const CurrencyConverter = () => {
         amount={amount}
         rates={rates}
         currencies={currencies}
-        onCurrencyClick={handleCurrencyClick} 
+        onCurrencyClick={handleCurrencyClick}
       />
-    
-    {selectedCurrency && (
+
+      {selectedCurrency && (
         <HistoricalChart currency={selectedCurrency} onClose={closeChart} />
       )}
     </div>

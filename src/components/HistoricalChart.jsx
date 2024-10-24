@@ -11,6 +11,7 @@ import {
   Legend,
 } from "chart.js";
 import { fetchHistoricalRates } from "@/utils/api";
+import Loading from "./Loading";
 
 ChartJS.register(
   CategoryScale,
@@ -45,7 +46,7 @@ const HistoricalChart = ({ currency, onClose }) => {
   }, [currency]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div><Loading/></div>;
   }
 
   const chartData = {

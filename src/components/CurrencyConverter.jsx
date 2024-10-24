@@ -1,14 +1,17 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React,{ useState, useEffect } from "react";
 import { fetchLatestRates } from "../utils/api";
 import ConversionTable from "./ConversionTable";
 import HistoricalChart from "./HistoricalChart";
+import CurrencySearch from "./CurrencySearch";
 
 const CurrencyConverter = () => {
   const [amount, setAmount] = useState(1);
   const [rates, setRates] = useState({});
   const [currencies] = useState(["USD", "EUR", "GBP", "JPY", "CAD"]);
+  const [filteredCurrencies, setFilteredCurrencies] = useState(currencies);
   const [selectedCurrency, setSelectedCurrency] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const getRates = async () => {
@@ -20,6 +23,13 @@ const CurrencyConverter = () => {
     getRates();
   }, []);
 
+  useEffect(() => {
+    const result = currencies.filter((currency) =>
+      currency.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredCurrencies(result);
+  }, [searchQuery, currencies]);
+
   const handleCurrencyClick = (currency) => {
     setSelectedCurrency(currency);
   };
@@ -30,7 +40,6 @@ const CurrencyConverter = () => {
 
   const handleAmountChange = (e) => {
     const value = e.target.value;
-
     if (/^\d+$/.test(value) && value[0] !== "0") {
       setAmount(value);
     } else if (value === "") {
@@ -47,10 +56,14 @@ const CurrencyConverter = () => {
         className="border p-2 rounded w-full"
         placeholder="Enter amount in AUD"
       />
+      <CurrencySearch
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+      />
       <ConversionTable
         amount={amount}
         rates={rates}
-        currencies={currencies}
+        currencies={filteredCurrencies}
         onCurrencyClick={handleCurrencyClick}
       />
 

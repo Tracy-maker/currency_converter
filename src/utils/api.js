@@ -1,4 +1,4 @@
-const API_KEY = process.env.NEXT_PUBLIC_OPENEXCHANGE_API_KEY; // Ensure this is defined in .env.local
+const API_KEY = process.env.NEXT_PUBLIC_OPENEXCHANGE_API_KEY; 
 const BASE_URL = "https://openexchangerates.org/api";
 
 // Fetch the latest exchange rates
@@ -13,7 +13,7 @@ export const fetchLatestRates = async (baseCurrency = "AUD") => {
     }
 
     const data = await response.json();
-    return data.rates; // Return the rates object
+    return data.rates; 
   } catch (error) {
     console.error("Error fetching latest rates:", error);
     return null;
@@ -25,6 +25,7 @@ export const fetchHistoricalRates = async (currency) => {
   try {
     const today = new Date();
     const formattedToday = today.toISOString().split("T")[0];
+    
 
     const startDate = new Date(today.setDate(today.getDate() - 14))
       .toISOString()
